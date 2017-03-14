@@ -1,15 +1,17 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
+process.traceDeprecation = true;
 
 module.exports = {
     entry : {
-        app: './app/index.js',
+        app: './app/app.js',
+        some: './app/some.js',
+        somecss: './app/somecss.css'
     },
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(__dirname, './dist')
+        path: path.resolve( __dirname, 'dist')
     },
     module : {
         rules : [
@@ -23,9 +25,9 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract({
-                    fallbackLoader: "style-loader",
-                    loader: "css-loader",
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: "css-loader"
                 }),
             },
             {
@@ -34,7 +36,6 @@ module.exports = {
                 loader: "babel-loader",
                 query: {
                     'presets': ['es2015', 'react'],
-                    'plugins': ['lodash']
                 }
             }
         ]
@@ -52,12 +53,6 @@ module.exports = {
         new ExtractTextPlugin({
             filename: '[name].bundle.css',
             allChunks: true,
-        }),
-        new LodashModuleReplacementPlugin({
-            'collections': true,
-            'paths': true
-        }),
-        new webpack.optimize.OccurrenceOrderPlugin,
-        new webpack.optimize.UglifyJsPlugin
+        })
     ],
 }
